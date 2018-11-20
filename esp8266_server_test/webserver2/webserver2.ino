@@ -13,7 +13,7 @@ const char* password = "labitatisawesome";
 enum stage_names {
   ledON, ledOFF, drive_forward, drive_backward
 };
-static stage_names stage = ledON;
+static stage_names stage = ledOFF;
 
 //String HTMLpage = "";
 String out;
@@ -33,7 +33,7 @@ void HTMLpage() {
   out += "<body style='background-color:#ff8d33'>";
   out += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=yes\">";
   out += "<FONT SIZE=-1>";
-  out += "<h2>Labitat test wifi neopixel light</h2>";
+  out += "<h2>EL lab wifi enabled webserver</h2>";
   out += "<br/>";
   out += "Turn led On/OFF<br>";
   out += "<a href=\"ledON\"><button>ON</button></a>";
@@ -88,13 +88,13 @@ void handleNotFound() {
   Webserver.send(404, "text/plain", message);
   digitalWrite(LED, 0);
 }
-
+//Initialize pins
 void setup(void) {
   pinMode(LED, OUTPUT);
   pinMode(D7, OUTPUT);
   pinMode(D8, OUTPUT);
   digitalWrite(LED, LOW);
-  Serial.begin(115200);
+  Serial.begin(115200); //select transfer speed
   WiFi.begin(ssid, password);
   Serial.println("");
 
@@ -103,6 +103,7 @@ void setup(void) {
     delay(500);
     Serial.print(".");
   }
+  //print in Serial Monitor
   Serial.println("");
   Serial.print("Connected to ");
   Serial.println(ssid);
@@ -122,32 +123,7 @@ void setup(void) {
   Webserver.on("/", [](){
     Webserver.send(200, "text/html", out);
   });
-  /*
-  Webserver.on("/ledON", [](){
-    Webserver.send(200, "text/html", HTMLpage+"<p>DRIVE</p>");
-    digitalWrite(D7, HIGH);
-    delay(1000);
-  });
 
-  Webserver.on("/ledOFF", [](){
-    Webserver.send(200, "text/html", HTMLpage+"<p>NO DRIVE</p>");
-    digitalWrite(D8, HIGH);
-    delay(1000);
-  });
-
-  });
-  Webserver.on("/ledON", [](){
-    Webserver.send(200, "text/html", out+"<p>LED is ON</p>");
-    digitalWrite(LED, LOW);
-    delay(1000);
-  });
-
-  Webserver.on("/ledOFF", [](){
-    Webserver.send(200, "text/html", out+"<p>LED is OFF</p>");
-    digitalWrite(LED, HIGH);
-    delay(1000);
-  });
-*/
   Webserver.onNotFound(handleNotFound);
 
   Webserver.begin();
