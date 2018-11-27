@@ -58,12 +58,12 @@ void HTMLpage() {
   out += "<a href=\"b250\"><button>100%</button></a><br><br>";
   out += "Colors<br>";
   out += "<a href=\"bright\"><button>white</button></a>";
-  out += "<a href=\"yellow\"><button>yellow</button></a><br>";  
+  out += "<a href=\"yellow\"><button>yellow</button></a><br>";
   out += "<a href=\"orange\"><button>orange</button></a>";
   out += "<a href=\"red\"><button>red</button></a><br>";
   out += "<a href=\"purple\"><button>purple</button></a>";
   out += "<a href=\"blue\"><button>blue</button></a><br>";
-  out += "<a href=\"cyan\"><button>cyan</button></a>"; 
+  out += "<a href=\"cyan\"><button>cyan</button></a>";
   out += "<a href=\"green\"><button>green</button></a><br><br>";
   out += "Extra<br>";
   out += "<a href=\"rainbow\"><button>plain rainbow</button></a><br><br>";
