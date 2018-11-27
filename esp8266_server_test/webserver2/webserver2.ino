@@ -6,8 +6,8 @@
 ESP8266WebServer Webserver(80);
 
 //Wifi SSID and Passwd
-const char* ssid = "Labitat (free)";
-const char* password = "labitatisawesome";
+const char* ssid = "TENTOB";
+const char* password = "H72gj+oPa";
 
 //important to add variables
 enum stage_names {
@@ -28,7 +28,11 @@ void setup(void){
 void HTMLpage() {
   digitalWrite(LED, 1);
   String out;
-  out = "<html><head><title>EL lab wifi enabled webserver</title></head>";
+  out = "<html><head><title>EL lab wifi enabled webserver</title>";
+  out += "<script language=\"JavaScript\">";
+  out += "console.log('yeet')";
+  out += "</script>";
+  out += "</head>";
   out += "<font color=\"#021640\"><body bgcolor=\"#ff8d33\">";
   out += "<body style='background-color:#ff8d33'>";
   out += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=yes\">";
