@@ -8,19 +8,19 @@
 ESP8266WebServer Webserver(80);
 
 Servo myservo;    //laver servo til obj.
-Servo rotservo; //Til drejnings servoerne.
+Servo rotservo; //til rotations-funktion
 
-int pos = 0;
-int rot = 0;
+int pos = 0; //sætter position til 0
+int rot = 0;//sætter rotation til 0
 
 //GPI0 som servo er sat til.
 //static const int servoPin = 13;
 
-//erstater med netwerks id og pass.
+//erstater med network's id og pass.
 const char* ssid = "TENTOB";
 const char* password = "H72gj+oPa";
 
-//Set web serverens port nr til 80
+//sæt webserverens port til nr. 80
 WiFiServer server(80);
 
 //variablen til at gemme HTTP 
@@ -38,6 +38,7 @@ String RvalueString = String(5)
 int rot1 = 0;
 int rot2 = 0;
 
+//starter arduinoens setup så benene alokeres deres funktioner
 void setup() {
   pinMode(D5, OUTPUT);
   // put your setup code here, to run once:
