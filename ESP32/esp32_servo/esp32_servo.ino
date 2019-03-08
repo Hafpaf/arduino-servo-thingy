@@ -110,13 +110,12 @@ void loop() {
             pos1 = header.indexOf('=');
             pos2 = header.indexOf('&');
             valueString = header.substring(pos1+1, pos2);
-            valueString2 = header.substring(pos1-1, pos2);
+            valueString2 = header.substring(pos1+1, pos2);
 
             //Rotere servo
             myservo.write(valueString.toInt());
             myservo2.write((valueString2.toInt()));
-            Serial.println(valueString);
-            Serial.println(valueString2);
+            
           }
           //HTTP Response
           client.println();
