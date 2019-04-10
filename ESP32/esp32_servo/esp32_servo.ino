@@ -1,11 +1,63 @@
 #include <ESPmDNS.h>
 #include <ESP32Servo.h>
-#include <dummy.h>
+//#include <dummy.h>
 //#include <ESP8266WiFi.h>
 #include <WiFi.h>
 //#include <ESP8266WebServer.h>
 //#include <ESP8266mDNS.h>
 //#include <Servo.h>
+#include <FS.h>
+#include <SPIFFS.h>
+
+#define FORMAT_SPIFFS_IF_FAILED true
+
+void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
+    Serial.printf("Listing directory: %s\r\n", dirname);
+
+    File root = fs.open(dirname);
+    if(!root){
+        Serial.println("- failed to open directory");
+        return;
+    }
+    if(!root.isDirectory()){
+        Serial.println(" - not a directory");
+        return;
+    }
+
+    File file = root.openNextFile();
+    while(file){
+        if(file.isDirectory()){
+            Serial.print("  DIR : ");
+            Serial.println(file.name());
+            if(levels){
+                listDir(fs, file.name(), levels -1);
+            }
+        } else {
+            Serial.print("  FILE: ");
+            Serial.print(file.name());
+            Serial.print("\tSIZE: ");
+            Serial.println(file.size());
+        }
+        file = root.openNextFile();
+    }
+}
+
+void readFile(fs::FS &fs, const char * path){
+    Serial.printf("Reading file: %s\r\n", path);
+
+    File file = fs.open(path);
+    if(!file || file.isDirectory()){
+        Serial.println("- failed to open file for reading");
+        return;
+    }
+
+    Serial.println("- read from file:");
+    while(file.available()){
+        Serial.write(file.read());
+    }
+}
+
+
 
 
 //WiFiServer server(80);
@@ -18,12 +70,12 @@ int pos = 0;
 //GPI0 som servo er sat til.
 //static const int servoPin = 13;
 
-//erstater med netwerks id og pass.
+//tilslutter til netvaerk med ssid og password
 const char* ssid = "ESP8266_AP";
 const char* password = "testnet1";
 
 
-//Set web serverens port nr til 80
+//Set webserverens port til 80
 WiFiServer server(80);
 
 //variablen til at gemme HTTP 
@@ -40,12 +92,17 @@ void setup() {
   pinMode(14, OUTPUT);
   // put your setup code here, to run once:
   Serial.begin(115200);
+  
+  if(!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)){
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
 
   myservo.attach(13);   //Sætter Servo objekt til servopin
   myservo2.attach(14);
 
 
-  //Connect to Wi-Fi network med SSID og kodeordet.
+  //Tilslut to Wi-Fi network med SSID og password.
   Serial.print("forbinder til ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -53,7 +110,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  //printer den lokale ip adrese
+  //printer den lokale ip adresse
   Serial.println("");
   Serial.println("WiFi connected.");
   Serial.println("IP address: ");
@@ -63,6 +120,9 @@ void setup() {
 
 
 void loop() {
+  listDir(SPIFFS, "/", 0); //list files in on file system
+  //readFile(SPIFFS, "/jquery.min.js"); //read file on file system
+  
   // put your main code here, to run repeatedly:
   WiFiClient client = server.available(); //bruges til signal fra client
 
@@ -91,7 +151,8 @@ void loop() {
 
           client.println("<style>body{ text-align: center; font-family:\"Trebuchet MS\", Arial; margin-left:auto; margin-right:auto;}");
           client.println(".slider{ width: 300px;}</style>");
-          client.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
+          client.println("<script type = \"text/javascript\">");
+          client.println("<src=\"/jquery.min.js\"/script>");
           //Web siden
           client.println("</head><body><h1>ESP32 Servo controller</h1>");
           client.println("<p>Position: <span id=\"servoPos\"></span></p>");          
@@ -114,8 +175,9 @@ void loop() {
 
             //Rotere servo
             myservo.write(valueString.toInt());
-            myservo2.write((valueString2.toInt()));
-            
+            myservo2.write(2*(valueString.toInt()));
+            Serial.println(valueString.toInt());
+            Serial.println(2*(valueString.toInt()));
           }
           //HTTP Response
           client.println();
