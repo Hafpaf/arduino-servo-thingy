@@ -34,23 +34,23 @@ WiFiServer server(80);
 String header;
 
 //få HTTP value
-String valueString = String(5);
-String valueString2 = String(5);
+String valueString = String(90);
+String valueString2 = String(90);
 int pos1 = 0;
 int pos2 = 0;
 
 void setup() {
-  pinMode(32, OUTPUT);
-  pinMode(33, OUTPUT);
-  pinMode(22, OUTPUT);
-  pinMode(21, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(19, OUTPUT);
+  pinMode(13  , OUTPUT);
+  pinMode(17, OUTPUT);
   // put your setup code here, to run once:
   Serial.begin(115200);
 
-  myservo.attach(32);   //Sætter Servo objekt til servopin
-  myservo2.attach(22);
-  myservo3.attach(33);
-  myservo4.attach(21);
+  myservo.attach(26);   //Sætter Servo objekt til servopin
+  myservo2.attach(19);
+  myservo3.attach(13);
+  myservo4.attach(17);
 
 
   //Connect to Wi-Fi network med SSID og kodeordet.
@@ -102,24 +102,16 @@ void loop() {
             client.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
             //Script indlæses
             client.println("</head><body><h1>ESP32 Servo controller</h1>");
-            client.println("<p>Position: <span id=\"servoPos1\"></span></p>");
-            client.println("<input type=\"range\" min=\"0\" max=\"180\" class=\"slider\" id=\"servoSlider1\" onchange=\"servo(this.value)\" value=\"" + valueString + "\"/>");
+            client.println("<p>Position: <span id=\"servoPos\"></span></p>");
+            client.println("<input type=\"range\" min=\"0\" max=\"180\" class=\"slider\" id=\"servoSlider\" onchange=\"servo(this.value)\" value=\"" + valueString + "\"/>");
 
-            client.println("<p>Position: <span id=\"servoPos2\"></span></p>");
-            client.println("<input type=\"range\" min=\"0\" max=\"180\" class=\"slider\" id=\"servoSlider2\" onchange=\"servo(this.value)\" value=\"" + valueString + "\"/>");
 
-            client.println("<script>var slider1 = document.getElementById(\"servoSlider1\");");     
-            client.println("var servoP1 = document.getElementById(\"servoPos1\"); servoP1.innerHTML = slider1.value;");
-            client.println("slider1.oninput = function() { slider1.value = this.value; servoP1.innerHTML = this.value; }");
+            client.println("<script>var slider = document.getElementById(\"servoSlider\");");     
+            client.println("var servoP = document.getElementById(\"servoPos\"); servoP.innerHTML = slider.value;");
+            client.println("slider.oninput = function() { slider.value = this.value; servoP.innerHTML = this.value; }");
             client.println("$.ajaxSetup({timeout:1000}); function servo(pos) { ");
             client.println("$.get(\"/?value=\" + pos + \"&\"); {Connection: close};}");
             //Slider 2 
-            
-            client.println("var slider2 = document.getElementById(\"servoSlider2\");");     
-            client.println("var servoP2 = document.getElementById(\"servoPos2\"); servoP2.innerHTML = slider2.value;");
-            client.println("slider2.oninput = function() { slider2.value = this.value; servoP2.innerHTML = this.value; }");
-            client.println("$.ajaxSetup({timeout:1000}); function servo(pos) { ");
-            client.println("$.get(\"/?value=\" + pos + \"&\"); {Connection: close};}");
             
             
            
@@ -136,16 +128,16 @@ void loop() {
             if (header.indexOf("GET /?value=") >= 0) {
               pos1 = header.indexOf('=');
               pos2 = header.indexOf('&');
-              pos3 = header.indexOf('t');
-              pos4 = header.indexOf('q');
+//              pos3 = header.indexOf('t');
+  //            pos4 = header.indexOf('q');
               valueString = header.substring(pos1 + 1, pos2);
-              valueString2 = header.substring(pos3 + 1, pos4);
+    //          valueString2 = header.substring(pos3 + 1, pos4);
 
               //Rotere servo
               myservo.write(valueString.toInt());
-              myservo2.write((180)-(valueString.toInt()));
+              myservo2.write((189)-(valueString.toInt()));
               myservo3.write(valueString.toInt());
-              myservo4.write((180)-(valueString.toInt()));
+              myservo4.write((189)-(valueString.toInt()));
               Serial.println(valueString.toInt());
               
             }
